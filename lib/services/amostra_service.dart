@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:projeto/models/amostra.dart';
 
 import '../db/amostra_database.dart';
@@ -9,6 +7,10 @@ class AmostraService {
 
   Future<List<Amostra>> obterAmostras() async {
     return await _dbService.lerTodasAmostra();
+  }
+
+  Future<List<Amostra>> obterAmostrasByIdProjeto(int idProjeto) async {
+    return await _dbService.lerAmostraByIdProjeto(idProjeto);
   }
 
   Future<void> adicionarAmostra(

@@ -23,6 +23,16 @@ class AmostraController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> carregarAmostrasByIdProjeto(int idProjeto) async {
+    _carregando = true;
+    notifyListeners();
+
+    _amostras = await _amostraService.obterAmostrasByIdProjeto(idProjeto);
+
+    _carregando = false;
+    notifyListeners();
+  }
+
   Future<void> adicionarAmostra(
     int idProjeto,
     String amostra,
@@ -42,11 +52,11 @@ class AmostraController extends ChangeNotifier {
       alturaTotal,
       qualidadeFuste,
     );
-    await carregarAmostras();
+    await carregarAmostrasByIdProjeto(idProjeto);
   }
 
-  Future<void> deletarAmostra(int idAmostra) async {
+  Future<void> deletarAmostra(int idAmostra, int idProjeto) async {
     await _amostraService.deletarAmostra(idAmostra);
-    await carregarAmostras();
+    await carregarAmostrasByIdProjeto(idProjeto);
   }
 }

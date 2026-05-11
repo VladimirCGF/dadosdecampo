@@ -3,7 +3,9 @@ import 'package:projeto/controllers/amostra_controller.dart';
 import 'package:projeto/widgets/amostra_card.dart';
 
 class AmostraPage extends StatefulWidget {
-  const AmostraPage({super.key});
+  final dynamic projeto;
+
+  const AmostraPage({super.key, required this.projeto});
 
   @override
   State<AmostraPage> createState() => _AmostraPageState();
@@ -11,7 +13,6 @@ class AmostraPage extends StatefulWidget {
 
 class _AmostraPageState extends State<AmostraPage> {
   final AmostraController _controller = AmostraController();
-  final _idProjetoController = TextEditingController();
   final _amostraController = TextEditingController();
   final _codigoController = TextEditingController();
   final _circunferenciaController = TextEditingController();
@@ -22,12 +23,11 @@ class _AmostraPageState extends State<AmostraPage> {
   @override
   void initState() {
     super.initState();
-    _controller.carregarAmostras();
+    _controller.carregarAmostrasByIdProjeto(widget.projeto.idProjeto);
   }
 
   @override
   void dispose() {
-    _idProjetoController.dispose();
     _amostraController.dispose();
     _codigoController.dispose();
     _circunferenciaController.dispose();
@@ -40,7 +40,7 @@ class _AmostraPageState extends State<AmostraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Lista de Amostras')),
+      appBar: AppBar(title: const Text('Projeto')),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, child) {
@@ -71,7 +71,10 @@ class _AmostraPageState extends State<AmostraPage> {
                   print("Editando amostra: ${amostra.codigo}");
                 },
                 onDelete: () {
-                  _controller.deletarAmostra(amostra.idAmostra!);
+                  _controller.deletarAmostra(
+                    amostra.idAmostra!,
+                    widget.projeto.idProjeto,
+                  );
                 },
               );
             },
@@ -94,10 +97,6 @@ class _AmostraPageState extends State<AmostraPage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: _idProjetoController,
-                decoration: const InputDecoration(labelText: 'IdProjeto'),
-              ),
               TextField(
                 controller: _amostraController,
                 decoration: const InputDecoration(labelText: 'Amostra'),
@@ -134,7 +133,7 @@ class _AmostraPageState extends State<AmostraPage> {
             ElevatedButton(
               onPressed: () {
                 _controller.adicionarAmostra(
-                  int.parse(_idProjetoController.text),
+                  widget.projeto.idProjeto,
                   _amostraController.text,
                   _codigoController.text,
                   double.parse(_circunferenciaController.text),

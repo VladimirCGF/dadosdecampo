@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/controllers/projeto_controller.dart';
+import 'package:projeto/widgets/projeto_card.dart';
+
+import 'amostra_page.dart';
 
 class ProjetoPage extends StatefulWidget {
   const ProjetoPage({super.key});
@@ -27,7 +30,7 @@ class _ProjetoPageState extends State<ProjetoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Lista de Projetos')),
+      appBar: AppBar(title: const Text('Projetos')),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, child) {
@@ -45,13 +48,20 @@ class _ProjetoPageState extends State<ProjetoPage> {
             itemCount: _controller.projetos.length,
             itemBuilder: (context, index) {
               final projeto = _controller.projetos[index];
-              return ListTile(
-                title: Text(projeto.titulo),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () =>
-                      _controller.deletarProjeto(projeto.idProjeto!),
-                ),
+              return ProjetoCard(
+                titulo: projeto.titulo,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AmostraPage(projeto: projeto,),
+                    ),
+                  );
+                },
+
+                onDelete: () {
+                  _controller.deletarProjeto(projeto.idProjeto!);
+                },
               );
             },
           );

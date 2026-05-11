@@ -52,6 +52,20 @@ class DatabaseService {
     return resultado.map((json) => Amostra.fromMap(json)).toList();
   }
 
+  Future<List<Amostra>> lerAmostraByIdProjeto(int idProjeto) async {
+    final db = await instance.database;
+
+    final resultado = await db.query(
+        'amostras',
+        where: 'idProjeto = ?',
+        whereArgs: [idProjeto],
+        orderBy: 'idAmostra DESC');
+
+    return resultado.map((json) => Amostra.fromMap(json)).toList();
+  }
+
+
+
   Future<int> atualizar(Amostra amostra) async {
     final db = await instance.database;
     return await db.update(
