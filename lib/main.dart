@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/views/amostra_page.dart';
 import 'package:projeto/views/home_page.dart';
+import 'package:projeto/widgets/header_custom.dart';
 import 'package:projeto/views/projeto_page.dart';
 
 void main() async {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
