@@ -59,93 +59,95 @@ class _NovaAmostraBottomSheetState extends State<NovaAmostraBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 12,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 50,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              widget.amostraParaEdicao == null ? "Nova amostra" : "Editar amostra",
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF003D1B),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            Row(
-              children: [
-                Expanded(child: _buildField("Amostra", _amostraController)),
-                const SizedBox(width: 16),
-                Expanded(child: _buildField("Código", _codigoController)),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            Row(
-              children: [
-                Expanded(child: _buildField("Circunferência", _circunferenciaController, isNumeric: true)),
-                const SizedBox(width: 16),
-                Expanded(child: _buildField("Fuste", _qualidadeFusteController, isNumeric: true)),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            Row(
-              children: [
-                Expanded(child: _buildField("Altura comercial", _alturaComercialController, isNumeric: true)),
-                const SizedBox(width: 16),
-                Expanded(child: _buildField("Altura total", _alturaTotalController, isNumeric: true)),
-              ],
-            ),
-            const SizedBox(height: 32),
-
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton.icon(
-                onPressed: _handleSave,
-                icon: const Icon(Icons.eco, size: 24),
-                label: Text(
-                  widget.amostraParaEdicao == null ? "Adicionar amostra" : "Salvar alterações",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+    return SafeArea(
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 12,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 50,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003D1B),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                widget.amostraParaEdicao == null ? "Nova amostra" : "Editar amostra",
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF003D1B),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+      
+              Row(
+                children: [
+                  Expanded(child: _buildField("Amostra", _amostraController)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildField("Código", _codigoController)),
+                ],
+              ),
+              const SizedBox(height: 20),
+      
+              Row(
+                children: [
+                  Expanded(child: _buildField("Circunferência", _circunferenciaController, isNumeric: true)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildField("Fuste", _qualidadeFusteController, isNumeric: true)),
+                ],
+              ),
+              const SizedBox(height: 20),
+      
+              Row(
+                children: [
+                  Expanded(child: _buildField("Altura comercial", _alturaComercialController, isNumeric: true)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildField("Altura total", _alturaTotalController, isNumeric: true)),
+                ],
+              ),
+              const SizedBox(height: 32),
+      
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton.icon(
+                  onPressed: _handleSave,
+                  icon: const Icon(Icons.eco, size: 24),
+                  label: Text(
+                    widget.amostraParaEdicao == null ? "Adicionar amostra" : "Salvar alterações",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003D1B),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
