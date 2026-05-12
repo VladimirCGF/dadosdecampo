@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/models/amostra.dart';
+
 
 class NovaAmostraBottomSheet extends StatefulWidget {
+  final Amostra? amostraParaEdicao;
   final Function(
-      String amostra,
-      String codigo,
-      double circunferencia,
-      double alturaCom,
-      double alturaTot,
-      int fuste,
-      ) onSave;
+    String amostra,
+    String codigo,
+    double circunferencia,
+    double alturaCom,
+    double alturaTot,
+    int fuste,
+  ) onSave;
 
-  const NovaAmostraBottomSheet({super.key, required this.onSave});
+  const NovaAmostraBottomSheet({
+    super.key,
+    required this.onSave,
+    this.amostraParaEdicao,
+  });
 
   @override
   State<NovaAmostraBottomSheet> createState() => _NovaAmostraBottomSheetState();
@@ -24,6 +31,20 @@ class _NovaAmostraBottomSheetState extends State<NovaAmostraBottomSheet> {
   final _alturaTotalController = TextEditingController();
   // Novo controller para a qualidade do fuste
   final _qualidadeFusteController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.amostraParaEdicao != null) {
+      _amostraController.text = widget.amostraParaEdicao!.amostra;
+      _codigoController.text = widget.amostraParaEdicao!.codigo;
+      _circunferenciaController.text = widget.amostraParaEdicao!.circunferencia.toString();
+      _alturaComercialController.text = widget.amostraParaEdicao!.alturaComercial.toString();
+      _alturaTotalController.text = widget.amostraParaEdicao!.alturaTotal.toString();
+      _qualidadeFusteController.text = widget.amostraParaEdicao!.qualidadeFuste.toString();
+    }
+  }
+
 
   @override
   void dispose() {
@@ -65,12 +86,11 @@ class _NovaAmostraBottomSheetState extends State<NovaAmostraBottomSheet> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              "Nova amostra",
-              style: TextStyle(
-                fontSize: 28,
+            Text(
+              widget.amostraParaEdicao == null ? "Nova amostra" : "Editar amostra",
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF003D1B),
+                color: const Color(0xFF003D1B),
               ),
             ),
             const SizedBox(height: 24),
@@ -108,9 +128,12 @@ class _NovaAmostraBottomSheetState extends State<NovaAmostraBottomSheet> {
               child: ElevatedButton.icon(
                 onPressed: _handleSave,
                 icon: const Icon(Icons.eco, size: 24),
-                label: const Text(
-                  "Adicionar amostra",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                label: Text(
+                  widget.amostraParaEdicao == null ? "Adicionar amostra" : "Salvar alterações",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF003D1B),
@@ -134,8 +157,7 @@ class _NovaAmostraBottomSheetState extends State<NovaAmostraBottomSheet> {
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontSize: 18,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w500,
             color: Colors.grey[700],
           ),

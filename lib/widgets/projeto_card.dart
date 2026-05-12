@@ -53,7 +53,7 @@ class ProjetoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -96,10 +96,9 @@ class ProjetoCard extends StatelessWidget {
                     children: [
                       Text(
                         titulo,
-                        style: const TextStyle(
-                          fontSize: 24,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF212121),
+                          color: const Color(0xFF212121),
                         ),
                       ),
                     ],

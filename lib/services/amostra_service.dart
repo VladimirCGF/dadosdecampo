@@ -1,40 +1,35 @@
+import 'package:projeto/db/amostra_dao.dart';
 import 'package:projeto/models/amostra.dart';
 
-import '../db/amostra_database.dart';
-
 class AmostraService {
-  final DatabaseService _dbService = DatabaseService.instance;
+  final _dao = AmostraDao();
 
-  Future<List<Amostra>> obterAmostras() async {
-    return await _dbService.lerTodasAmostra();
-  }
+  Future<List<Amostra>> obterAmostrasByIdProjeto(int idProjeto) =>
+      _dao.lerPorProjeto(idProjeto);
 
-  Future<List<Amostra>> obterAmostrasByIdProjeto(int idProjeto) async {
-    return await _dbService.lerAmostraByIdProjeto(idProjeto);
-  }
-
-  Future<void> adicionarAmostra(
-    int idProjeto,
-    String amostra,
-    String codigo,
-    double circunferencia,
-    double alturaComercial,
-    double alturaTotal,
-    int qualidadeFuste,
-  ) async {
-    final novaAmostra = Amostra(
-      idProjeto: idProjeto,
-      amostra: amostra,
-      codigo: codigo,
-      circunferencia: circunferencia,
-      alturaComercial: alturaComercial,
-      alturaTotal: alturaTotal,
-      qualidadeFuste: qualidadeFuste,
+  Future<int> adicionarAmostra({
+    required int idProjeto,
+    required String amostra,
+    required String codigo,
+    required double circunferencia,
+    required double alturaComercial,
+    required double alturaTotal,
+    required int qualidadeFuste,
+  }) {
+    return _dao.inserir(
+      Amostra(
+        idProjeto: idProjeto,
+        amostra: amostra,
+        codigo: codigo,
+        circunferencia: circunferencia,
+        alturaComercial: alturaComercial,
+        alturaTotal: alturaTotal,
+        qualidadeFuste: qualidadeFuste,
+      ),
     );
-    await _dbService.inserir(novaAmostra);
   }
 
-  Future<void> deletarAmostra(int idAmostra) async {
-    await _dbService.deletar(idAmostra);
-  }
+  Future<void> deletarAmostra(int id) => _dao.deletar(id);
+
+  Future<int> atualizarAmostra(Amostra amostra) => _dao.atualizar(amostra);
 }

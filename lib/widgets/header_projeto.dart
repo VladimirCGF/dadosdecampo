@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class HeaderProjeto extends StatelessWidget {
   final String titulo;
   final VoidCallback onExport; // Adicionado o callback para a exportação
@@ -30,14 +31,13 @@ class HeaderProjeto extends StatelessWidget {
           GestureDetector(
             onTap: () => Navigator.pop(context),
             child: Row(
-              children: const [
-                Icon(Icons.arrow_back, color: Colors.white, size: 24),
-                SizedBox(width: 8),
+              children: [
+                const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                const SizedBox(width: 8),
                 Text(
                   "Projeto",
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
-                    fontSize: 18,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -51,9 +51,8 @@ class HeaderProjeto extends StatelessWidget {
               Expanded(
                 child: Text(
                   titulo,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Colors.white,
-                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                     letterSpacing: -0.5,
                   ),
@@ -63,7 +62,7 @@ class HeaderProjeto extends StatelessWidget {
               InkWell(
                 onTap: onExport,
                 borderRadius: BorderRadius.circular(10),
-                child: _buildExcelButton(),
+                child: _buildExcelButton(context),
               ),
             ],
           ),
@@ -72,7 +71,7 @@ class HeaderProjeto extends StatelessWidget {
     );
   }
 
-  Widget _buildExcelButton() {
+  Widget _buildExcelButton(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -81,25 +80,24 @@ class HeaderProjeto extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.white24),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(
+            children: [
+              const Icon(
                 Icons.table_chart_rounded,
                 color: Colors.greenAccent,
                 size: 20,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 "Excel",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
                 ),
               ),
             ],

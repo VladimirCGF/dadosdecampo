@@ -53,20 +53,18 @@ class HeaderHome extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               "Inventário Florestal",
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
-                                fontSize: 32,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: -0.5,
                               ),
                             ),
-                            const Text(
+                            Text(
                               "Amostras de campo",
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: Colors.white70,
-                                fontSize: 18,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),

@@ -1,20 +1,13 @@
+import 'package:projeto/db/projeto_dao.dart';
 import 'package:projeto/models/projeto.dart';
 
-import '../db/projeto_database.dart';
-
 class ProjetoService {
-  final DatabaseService _dbService = DatabaseService.instance;
+  final _dao = ProjetoDao();
 
-  Future<List<Projeto>> obterProjetos() async {
-    return await _dbService.lerTodosOsProjetos();
-  }
+  Future<List<Projeto>> obterProjetos() => _dao.lerTodos();
 
-  Future<void> adicionarProjeto(String titulo) async {
-    final novoProjeto = Projeto(titulo: titulo);
-    await _dbService.inserir(novoProjeto);
-  }
+  Future<void> adicionarProjeto(String titulo) =>
+      _dao.inserir(Projeto(titulo: titulo));
 
-  Future<void> deletarProjeto(int idProjeto) async {
-    await _dbService.deletar(idProjeto);
-  }
+  Future<void> deletarProjeto(int id) => _dao.deletar(id);
 }

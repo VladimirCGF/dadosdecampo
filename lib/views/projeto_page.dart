@@ -1,94 +1,162 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/models/amostra.dart';
+
+import 'package:provider/provider.dart';
 import 'package:projeto/controllers/amostra_controller.dart';
+import 'package:projeto/models/projeto.dart';
 import 'package:projeto/widgets/amostra_card.dart';
 import 'package:projeto/widgets/header_projeto.dart';
 import 'package:projeto/widgets/nova_amostra_dialog.dart';
+import 'package:projeto/widgets/save_status_banner.dart';
 import '../services/export_service.dart';
 
-class ProjetoPage extends StatefulWidget {
-  final dynamic projeto;
+class ProjetoPage extends StatelessWidget {
+  final Projeto projeto;
 
   const ProjetoPage({super.key, required this.projeto});
 
   @override
-  State<ProjetoPage> createState() => _ProjetoPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => AmostraController()
+        ..carregarAmostrasByIdProjeto(projeto.idProjeto!),
+      child: _ProjetoPageContent(projeto: projeto),
+    );
+  }
 }
 
-class _ProjetoPageState extends State<ProjetoPage> {
-  final AmostraController _controller = AmostraController();
+class _ProjetoPageContent extends StatelessWidget {
+  final Projeto projeto;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller.carregarAmostrasByIdProjeto(widget.projeto.idProjeto);
-  }
+  const _ProjetoPageContent({required this.projeto});
 
-  // Função disparada pelo botão Excel no HeaderProjeto
-  Future<void> _handleExportar() async {
-    if (_controller.amostras.isEmpty) {
+  Future<void> _handleExportar(BuildContext context) async {
+    final controller = context.read<AmostraController>();
+
+    if (controller.amostras.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Não há amostras para exportar."),
+          content: Text('Não há amostras para exportar.'),
           backgroundColor: Colors.orange,
         ),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Gerando arquivo Excel...")),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(color: Color(0xFF003D1B)),
+            SizedBox(width: 16),
+            Text('Gerando planilha...'),
+          ],
+        ),
+      ),
     );
 
     try {
-      // Correção: Passando argumentos posicionais conforme definido no seu serviço
       await ExportService.exportarProjetoXlsx(
-        widget.projeto.titulo,
-        _controller.amostras,
+        projeto.titulo,
+        controller.amostras,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erro ao exportar: $e"),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao exportar: $e'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } finally {
+      if (context.mounted) Navigator.of(context).pop();
     }
+  }
+
+  void _mostrarBottomSheetNovaAmostra(BuildContext context, {Amostra? amostraParaEdicao}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => NovaAmostraBottomSheet(
+        amostraParaEdicao: amostraParaEdicao,
+        onSave: (amostra, codigo, circunferencia, alturaComercial, alturaTotal,
+            qualidadeFuste) {
+          final controller = context.read<AmostraController>();
+
+          if (amostraParaEdicao != null) {
+            // Modo Edição
+            final amostraAtualizada = Amostra(
+              idAmostra: amostraParaEdicao.idAmostra,
+              idProjeto: amostraParaEdicao.idProjeto,
+              amostra: amostra,
+              codigo: codigo,
+              circunferencia: circunferencia,
+              alturaComercial: alturaComercial,
+              alturaTotal: alturaTotal,
+              qualidadeFuste: qualidadeFuste,
+            );
+            controller.editarAmostra(amostraAtualizada);
+          } else {
+            // Modo Criação
+            controller.adicionarAmostra(
+              idProjeto: projeto.idProjeto!,
+              amostra: amostra,
+              codigo: codigo,
+              circunferencia: circunferencia,
+              alturaComercial: alturaComercial,
+              alturaTotal: alturaTotal,
+              qualidadeFuste: qualidadeFuste,
+            );
+          }
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<AmostraController>();
+
     return Scaffold(
       backgroundColor: const Color(0xFFFDFCF4),
       body: Column(
         children: [
-          // O botão Excel agora chama a função através deste callback
           HeaderProjeto(
-            titulo: widget.projeto.titulo,
-            onExport: _handleExportar,
+            titulo: projeto.titulo,
+            onExport: () => _handleExportar(context),
+          ),
+
+          // Banner de confirmação de persistência (Fase 3)
+          SaveStatusBanner(
+            status: controller.saveStatus,
+            errorMessage: controller.saveError,
           ),
 
           Expanded(
-            child: ListenableBuilder(
-              listenable: _controller,
-              builder: (context, child) {
-                if (_controller.carregando) {
+            child: Builder(
+              builder: (context) {
+                if (controller.carregando) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (_controller.amostras.isEmpty) {
+                if (controller.amostras.isEmpty) {
                   return const Center(
                     child: Text(
-                      'Nenhuma amostra cadastrada. Toque no + para adicionar!',
+                      'Nenhuma amostra cadastrada.\nToque no + para adicionar!',
+                      textAlign: TextAlign.center,
                     ),
                   );
                 }
 
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 8, bottom: 100),
-                  itemCount: _controller.amostras.length,
+                  itemCount: controller.amostras.length,
                   itemBuilder: (context, index) {
-                    final amostra = _controller.amostras[index];
-
+                    final amostra = controller.amostras[index];
                     return AmostraCard(
                       amostra: amostra.amostra,
                       codigo: amostra.codigo,
@@ -97,12 +165,12 @@ class _ProjetoPageState extends State<ProjetoPage> {
                       alturaTotal: amostra.alturaTotal,
                       qualidadeFuste: amostra.qualidadeFuste,
                       onEdit: () {
-                        // Lógica de edição
+                        _mostrarBottomSheetNovaAmostra(context, amostraParaEdicao: amostra);
                       },
                       onDelete: () {
-                        _controller.deletarAmostra(
+                        controller.deletarAmostra(
                           amostra.idAmostra!,
-                          widget.projeto.idProjeto,
+                          projeto.idProjeto!,
                         );
                       },
                     );
@@ -117,27 +185,6 @@ class _ProjetoPageState extends State<ProjetoPage> {
         onPressed: () => _mostrarBottomSheetNovaAmostra(context),
         backgroundColor: const Color(0xFF003D1B),
         child: const Icon(Icons.add, color: Colors.white, size: 30),
-      ),
-    );
-  }
-
-  void _mostrarBottomSheetNovaAmostra(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => NovaAmostraBottomSheet(
-        onSave: (amostra, codigo, circunferencia, alturaComercial, alturaTotal, qualidadeFuste) {
-          _controller.adicionarAmostra(
-            widget.projeto.idProjeto,
-            amostra,
-            codigo,
-            circunferencia,
-            alturaComercial,
-            alturaTotal,
-            qualidadeFuste,
-          );
-        },
       ),
     );
   }

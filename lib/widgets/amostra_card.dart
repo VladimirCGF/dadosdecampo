@@ -64,7 +64,7 @@ class AmostraCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -87,15 +87,14 @@ class AmostraCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Am.",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
                 ),
                 Text(
                   amostra,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Colors.white,
-                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -110,10 +109,9 @@ class AmostraCard extends StatelessWidget {
               children: [
                 Text(
                   "Código: $codigo",
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF212121),
+                    color: const Color(0xFF212121),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -160,10 +158,16 @@ class AmostraCard extends StatelessWidget {
       child: RichText(
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
-          style: const TextStyle(color: Colors.black87, fontSize: 16),
+          style: const TextStyle(color: Colors.black87),
           children: [
-            TextSpan(text: "$label ", style: const TextStyle(fontWeight: FontWeight.normal)),
-            TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(
+              text: "$label ",
+              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+            ),
+            TextSpan(
+              text: value,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ],
         ),
       ),
