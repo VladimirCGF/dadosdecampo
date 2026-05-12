@@ -17,8 +17,8 @@ class HeaderHome extends StatelessWidget {
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
               colors: [
-                Color(0xFF003D1B), // Verde escuro
-                Color(0xFF2E7D32), // Verde médio (clara para a direita)
+                Color(0xFF003D1B),
+                Color(0xFF2E7D32),
               ],
             ),
           ),
@@ -30,7 +30,7 @@ class HeaderHome extends StatelessWidget {
                 child: Opacity(
                   opacity: 0.1,
                   child: Icon(
-                    Icons.eco, // Ou a imagem que você preferir
+                    Icons.eco,
                     size: 250,
                     color: Colors.white,
                   ),

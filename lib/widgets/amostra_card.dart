@@ -23,6 +23,37 @@ class AmostraCard extends StatelessWidget {
     required this.onDelete,
   });
 
+  void _confirmarExclusao(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: const Text("Excluir Amostra"),
+          content: Text("Deseja realmente excluir ?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                onDelete();
+              },
+              child: const Text("Excluir"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,14 +138,14 @@ class AmostraCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.edit_outlined, color: Colors.green, size: 22),
+                icon: const Icon(Icons.edit_outlined, color: Colors.blue, size: 22),
                 onPressed: onEdit,
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.all(8),
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 22),
-                onPressed: onDelete,
+                onPressed: () => _confirmarExclusao(context),
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.all(8),
               ),

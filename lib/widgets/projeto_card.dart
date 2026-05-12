@@ -12,6 +12,38 @@ class ProjetoCard extends StatelessWidget {
     required this.onTap,
   });
 
+  // Função interna para exibir o alerta de confirmação
+  void _confirmarExclusao(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: const Text("Confirmar Exclusão"),
+          content: Text("Tem certeza que deseja excluir o projeto '$titulo'? Todos os dados de amostras serão perdidos."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Fecha o alerta
+              child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o alerta
+                onDelete(); // Executa a função de exclusão original
+              },
+              child: const Text("Excluir"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +59,6 @@ class ProjetoCard extends StatelessWidget {
           ),
         ],
       ),
-      // O Material e o InkWell permitem o efeito visual de toque
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -37,7 +68,7 @@ class ProjetoCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // Badge da Pasta
+                // Badge da Pasta (Mantido conforme seu original)
                 Container(
                   width: 70,
                   height: 90,
@@ -59,7 +90,6 @@ class ProjetoCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
 
-                // Título
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +112,7 @@ class ProjetoCard extends StatelessWidget {
                     color: Colors.redAccent,
                     size: 28,
                   ),
-                  onPressed: onDelete,
+                  onPressed: () => _confirmarExclusao(context),
                 ),
               ],
             ),
