@@ -4,7 +4,7 @@ import 'package:projeto/widgets/header_home.dart';
 import 'package:projeto/widgets/projeto_card.dart';
 
 import '../widgets/novo_projeto_dialog.dart';
-import 'amostra_page.dart';
+import 'projeto_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AmostraPage(projeto: projeto),
+                            builder: (context) => ProjetoPage(projeto: projeto),
                           ),
                         );
                       },

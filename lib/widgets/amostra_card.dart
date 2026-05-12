@@ -104,7 +104,6 @@ class AmostraCard extends StatelessWidget {
           ),
           const SizedBox(width: 16),
 
-          // Centro: Informações
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

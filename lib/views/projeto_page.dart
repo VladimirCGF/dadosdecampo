@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/controllers/amostra_controller.dart';
 import 'package:projeto/widgets/amostra_card.dart';
-import 'package:projeto/widgets/header_amostra.dart';
+import 'package:projeto/widgets/header_projeto.dart';
 import 'package:projeto/widgets/nova_amostra_dialog.dart';
+import '../services/export_service.dart';
 
-class AmostraPage extends StatefulWidget {
+class ProjetoPage extends StatefulWidget {
   final dynamic projeto;
 
-  const AmostraPage({super.key, required this.projeto});
+  const ProjetoPage({super.key, required this.projeto});
 
   @override
-  State<AmostraPage> createState() => _AmostraPageState();
+  State<ProjetoPage> createState() => _ProjetoPageState();
 }
 
-class _AmostraPageState extends State<AmostraPage> {
+class _ProjetoPageState extends State<ProjetoPage> {
   final AmostraController _controller = AmostraController();
 
   @override
@@ -22,14 +23,49 @@ class _AmostraPageState extends State<AmostraPage> {
     _controller.carregarAmostrasByIdProjeto(widget.projeto.idProjeto);
   }
 
+  // Função disparada pelo botão Excel no HeaderProjeto
+  Future<void> _handleExportar() async {
+    if (_controller.amostras.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Não há amostras para exportar."),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Gerando arquivo Excel...")),
+    );
+
+    try {
+      // Correção: Passando argumentos posicionais conforme definido no seu serviço
+      await ExportService.exportarProjetoXlsx(
+        widget.projeto.titulo,
+        _controller.amostras,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro ao exportar: $e"),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Fundo em tom bege claro para destacar os cards brancos
       backgroundColor: const Color(0xFFFDFCF4),
       body: Column(
         children: [
-          HeaderAmostra(titulo: widget.projeto.titulo),
+          // O botão Excel agora chama a função através deste callback
+          HeaderProjeto(
+            titulo: widget.projeto.titulo,
+            onExport: _handleExportar,
+          ),
 
           Expanded(
             child: ListenableBuilder(
@@ -61,7 +97,7 @@ class _AmostraPageState extends State<AmostraPage> {
                       alturaTotal: amostra.alturaTotal,
                       qualidadeFuste: amostra.qualidadeFuste,
                       onEdit: () {
-                        // Lógica de edição pode ser implementada aqui
+                        // Lógica de edição
                       },
                       onDelete: () {
                         _controller.deletarAmostra(
@@ -88,7 +124,7 @@ class _AmostraPageState extends State<AmostraPage> {
   void _mostrarBottomSheetNovaAmostra(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Importante para o teclado não cobrir os campos
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => NovaAmostraBottomSheet(
         onSave: (amostra, codigo, circunferencia, alturaComercial, alturaTotal, qualidadeFuste) {

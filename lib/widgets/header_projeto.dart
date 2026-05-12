@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-class HeaderAmostra extends StatelessWidget {
+class HeaderProjeto extends StatelessWidget {
   final String titulo;
+  final VoidCallback onExport; // Adicionado o callback para a exportação
 
-  const HeaderAmostra({
+  const HeaderProjeto({
     super.key,
     required this.titulo,
+    required this.onExport, // Parâmetro obrigatório agora
   });
 
   @override
   Widget build(BuildContext context) {
-
     final double topPadding = MediaQuery.of(context).padding.top;
 
     return Container(
@@ -20,10 +21,7 @@ class HeaderAmostra extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.bottomRight,
           end: Alignment.topLeft,
-          colors: [
-            Color(0xFF003D1B),
-            Color(0xFF2E7D32),
-          ],
+          colors: [Color(0xFF003D1B), Color(0xFF2E7D32)],
         ),
       ),
       child: Column(
@@ -47,7 +45,6 @@ class HeaderAmostra extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -62,7 +59,12 @@ class HeaderAmostra extends StatelessWidget {
                   ),
                 ),
               ),
-              _buildExcelButton(),
+              // Envolvemos o botão com InkWell para detectar o clique
+              InkWell(
+                onTap: onExport,
+                borderRadius: BorderRadius.circular(10),
+                child: _buildExcelButton(),
+              ),
             ],
           ),
         ],
@@ -71,27 +73,38 @@ class HeaderAmostra extends StatelessWidget {
   }
 
   Widget _buildExcelButton() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onExport,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Row(
-        children: [
-          // Ícone simplificado do Excel ou uma Image.asset
-          const Icon(Icons.table_chart_rounded, color: Colors.greenAccent, size: 20),
-          const SizedBox(width: 8),
-          const Text(
-            "Excel",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white24),
           ),
-        ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(
+                Icons.table_chart_rounded,
+                color: Colors.greenAccent,
+                size: 20,
+              ),
+              SizedBox(width: 8),
+              Text(
+                "Excel",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
