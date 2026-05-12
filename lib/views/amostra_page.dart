@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/controllers/amostra_controller.dart';
 import 'package:projeto/widgets/amostra_card.dart';
+import 'package:projeto/widgets/header_amostra.dart';
+import 'package:projeto/widgets/nova_amostra_dialog.dart';
 
 class AmostraPage extends StatefulWidget {
   final dynamic projeto;
@@ -13,12 +15,6 @@ class AmostraPage extends StatefulWidget {
 
 class _AmostraPageState extends State<AmostraPage> {
   final AmostraController _controller = AmostraController();
-  final _amostraController = TextEditingController();
-  final _codigoController = TextEditingController();
-  final _circunferenciaController = TextEditingController();
-  final _alturaComercialController = TextEditingController();
-  final _alturaTotalController = TextEditingController();
-  final _qualidadeFusteController = TextEditingController();
 
   @override
   void initState() {
@@ -27,133 +23,86 @@ class _AmostraPageState extends State<AmostraPage> {
   }
 
   @override
-  void dispose() {
-    _amostraController.dispose();
-    _codigoController.dispose();
-    _circunferenciaController.dispose();
-    _alturaComercialController.dispose();
-    _alturaTotalController.dispose();
-    _qualidadeFusteController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Projeto')),
-      body: ListenableBuilder(
-        listenable: _controller,
-        builder: (context, child) {
-          if (_controller.carregando) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      // Fundo em tom bege claro para destacar os cards brancos
+      backgroundColor: const Color(0xFFFDFCF4),
+      body: Column(
+        children: [
+          HeaderAmostra(titulo: widget.projeto.titulo),
 
-          if (_controller.amostras.isEmpty) {
-            return const Center(
-              child: Text('Nenhuma amostra cadastrada. Adicione uma nova!'),
-            );
-          }
+          Expanded(
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, child) {
+                if (_controller.carregando) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          return ListView.builder(
-            itemCount: _controller.amostras.length,
-            itemBuilder: (context, index) {
-              final amostra = _controller.amostras[index];
-
-              return AmostraCard(
-                amostra: amostra.amostra,
-                codigo: amostra.codigo,
-                circunferencia: amostra.circunferencia,
-                alturaComercial: amostra.alturaComercial,
-                alturaTotal: amostra.alturaTotal,
-                qualidadeFuste: amostra.qualidadeFuste,
-
-                onEdit: () {
-                  print("Editando amostra: ${amostra.codigo}");
-                },
-                onDelete: () {
-                  _controller.deletarAmostra(
-                    amostra.idAmostra!,
-                    widget.projeto.idProjeto,
+                if (_controller.amostras.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Nenhuma amostra cadastrada. Toque no + para adicionar!',
+                    ),
                   );
-                },
-              );
-            },
-          );
-        },
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.only(top: 8, bottom: 100),
+                  itemCount: _controller.amostras.length,
+                  itemBuilder: (context, index) {
+                    final amostra = _controller.amostras[index];
+
+                    return AmostraCard(
+                      amostra: amostra.amostra,
+                      codigo: amostra.codigo,
+                      circunferencia: amostra.circunferencia,
+                      alturaComercial: amostra.alturaComercial,
+                      alturaTotal: amostra.alturaTotal,
+                      qualidadeFuste: amostra.qualidadeFuste,
+                      onEdit: () {
+                        // Lógica de edição pode ser implementada aqui
+                      },
+                      onDelete: () {
+                        _controller.deletarAmostra(
+                          amostra.idAmostra!,
+                          widget.projeto.idProjeto,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _mostrarDialogoNovoProjeto(context),
-        child: const Icon(Icons.add),
+        onPressed: () => _mostrarBottomSheetNovaAmostra(context),
+        backgroundColor: const Color(0xFF003D1B),
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }
 
-  void _mostrarDialogoNovoProjeto(BuildContext context) {
-    showDialog(
+  void _mostrarBottomSheetNovaAmostra(BuildContext context) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Nova Amostra'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _amostraController,
-                decoration: const InputDecoration(labelText: 'Amostra'),
-              ),
-              TextField(
-                controller: _codigoController,
-                decoration: const InputDecoration(labelText: 'Codigo'),
-              ),
-              TextField(
-                controller: _circunferenciaController,
-                decoration: const InputDecoration(labelText: 'Circunferência'),
-              ),
-              TextField(
-                controller: _alturaComercialController,
-                decoration: const InputDecoration(
-                  labelText: 'Altura Comercial',
-                ),
-              ),
-              TextField(
-                controller: _alturaTotalController,
-                decoration: const InputDecoration(labelText: 'Altura Total'),
-              ),
-              TextField(
-                controller: _qualidadeFusteController,
-                decoration: const InputDecoration(labelText: 'Qualidade Fuste'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _controller.adicionarAmostra(
-                  widget.projeto.idProjeto,
-                  _amostraController.text,
-                  _codigoController.text,
-                  double.parse(_circunferenciaController.text),
-                  double.parse(_alturaComercialController.text),
-                  double.parse(_alturaTotalController.text),
-                  int.parse(_qualidadeFusteController.text),
-                );
-                _amostraController.clear();
-                _codigoController.clear();
-                _circunferenciaController.clear();
-                _alturaComercialController.clear();
-                _alturaTotalController.clear();
-                _qualidadeFusteController.clear();
-                Navigator.pop(context);
-              },
-              child: const Text('Salvar'),
-            ),
-          ],
-        );
-      },
+      isScrollControlled: true, // Importante para o teclado não cobrir os campos
+      backgroundColor: Colors.transparent,
+      builder: (context) => NovaAmostraBottomSheet(
+        onSave: (amostra, codigo, circunferencia, alturaComercial, alturaTotal, qualidadeFuste) {
+          _controller.adicionarAmostra(
+            widget.projeto.idProjeto,
+            amostra,
+            codigo,
+            circunferencia,
+            alturaComercial,
+            alturaTotal,
+            qualidadeFuste,
+          );
+        },
+      ),
     );
   }
 }

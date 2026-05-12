@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class ProjetoCard extends StatelessWidget {
   final String titulo;
   final VoidCallback onDelete;
-  final VoidCallback onTap; // <--- Novo parâmetro para o clique
+  final VoidCallback onTap;
 
   const ProjetoCard({
     super.key,
     required this.titulo,
     required this.onDelete,
-    required this.onTap, // <--- Obrigatório agora
+    required this.onTap,
   });
 
   @override
@@ -31,7 +31,7 @@ class ProjetoCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap, // <--- Aqui o clique é detectado
+          onTap: onTap,
           borderRadius: BorderRadius.circular(15),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -76,7 +76,6 @@ class ProjetoCard extends StatelessWidget {
                   ),
                 ),
 
-                // Botão Deletar (Fica fora do alcance do InkWell por padrão)
                 IconButton(
                   icon: const Icon(
                     Icons.delete_outline,

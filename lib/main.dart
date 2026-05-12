@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/views/amostra_page.dart';
 import 'package:projeto/views/home_page.dart';
-import 'package:projeto/widgets/header_custom.dart';
-import 'package:projeto/views/projeto_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -16,10 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Inventário Florestal',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
